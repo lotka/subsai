@@ -5,7 +5,6 @@
 Utility functions
 """
 
-import torch
 from pysubs2.formats import FILE_EXTENSION_TO_FORMAT_IDENTIFIER
 
 
@@ -22,16 +21,6 @@ def _load_config(config_name, model_config, config_schema):
     if config_name in model_config:
         return model_config[config_name]
     return config_schema[config_name]['default']
-
-
-def get_available_devices() -> list:
-    """
-    Get available devices (cpu and gpus)
-
-    :return: list of available devices
-    """
-    return ['cpu', *[f'cuda:{i}' for i in range(torch.cuda.device_count())]]
-
 
 def available_translation_models() -> list:
     """

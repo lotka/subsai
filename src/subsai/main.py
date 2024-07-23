@@ -23,7 +23,6 @@ from typing import Union, Dict
 
 import ffmpeg
 import pysubs2
-from dl_translate import TranslationModel
 from pysubs2 import SSAFile
 from subsai.configs import AVAILABLE_MODELS
 from subsai.models.abstract_model import AbstractModel
@@ -133,70 +132,6 @@ class Tools:
         """
 
         return available_translation_models()
-
-    @staticmethod
-    def available_translation_languages(model: Union[str, TranslationModel]) -> list:
-        """
-        Returns the languages supported by the translation model
-
-        :param model: the name of the model
-        :return: list of available languages
-        """
-        if type(model) == str:
-            langs = Tools.create_translation_model(model).available_languages()
-        else:
-            langs = model.available_languages()
-        return langs
-
-    @staticmethod
-    def create_translation_model(model_name: str = "m2m100", model_family: str = None) -> TranslationModel:
-        """
-        Creates and returns a translation model instance.
-
-        :param model_name: name of the model. To get available models use :func:`available_translation_models`
-        :param model_family: Either "mbart50" or "m2m100". By default, See `dl-translate` docs
-        :return: A translation model instance
-        """
-        mt = TranslationModel(model_or_path=model_name, model_family=model_family)
-        return mt
-
-    @staticmethod
-    def translate(subs: SSAFile,
-                  source_language: str,
-                  target_language: str,
-                  model: Union[str, TranslationModel] = "m2m100",
-                  model_family: str = None,
-                  translation_configs: dict = {}) -> SSAFile:
-        """
-        Translates a subtitles `SSAFile` object, what :func:`SubsAI.transcribe` is returning
-
-        :param subs: `SSAFile` object
-        :param source_language: the language of the subtitles
-        :param target_language: the target language
-        :param model: the translation model, either an `str` or the model instance created by
-                        :func:`create_translation_model`
-        :param model_family: Either "mbart50" or "m2m100". By default, See `dl-translate` docs
-        :param translation_configs: dict of translation configs (see :attr:`configs.ADVANCED_TOOLS_CONFIGS`)
-
-        :return: returns an `SSAFile` subtitles translated to the target language
-        """
-        if type(model) == str:
-            translation_model = Tools.create_translation_model(model_name=model, model_family=model_family)
-        else:
-            translation_model = model
-
-        translated_subs = SSAFile()
-        for sub in subs:
-            translated_sub = sub.copy()
-            translated_sub.text = translation_model.translate(text=sub.text,
-                                                              source=source_language,
-                                                              target=target_language,
-                                                              batch_size=translation_configs[
-                                                                  'batch_size'] if 'batch_size' in translation_configs else 32,
-                                                              verbose=translation_configs[
-                                                                  'verbose'] if 'verbose' in translation_configs else False)
-            translated_subs.append(translated_sub)
-        return translated_subs
 
     @staticmethod
     def auto_sync(subs: SSAFile,
