@@ -37,7 +37,7 @@ __contact__ = "https://github.com/abdeladim-s"
 __copyright__ = "Copyright 2023,"
 __deprecated__ = False
 __license__ = "GPLv3"
-__version__ = importlib.metadata.version('subsai')
+# __version__ = importlib.metadata.version('subsai')
 
 subs_ai = SubsAI()
 tools = Tools()
