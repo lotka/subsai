@@ -255,8 +255,7 @@ def webui() -> None:
                        menu_items={
                            'Get Help': 'https://github.com/abdeladim-s/subsai',
                            'Report a bug': "https://github.com/abdeladim-s/subsai/issues",
-                           'About': f"### [Subs AI](https://github.com/abdeladim-s/subsai) \nv{__version__} "
-                                    f"\n \nLicense: GPLv3"
+                           'About': "under construction"
                        },
                        layout="wide",
                        initial_sidebar_state='auto')
