@@ -10,6 +10,10 @@ appname = "SubsAItk"
 appauthor = "lotka"
 
 USER_DATA_DIR = user_data_dir(appname, appauthor)
+DATA_DIR = os.path.dirname(USER_DATA_DIR)
+
+if not os.path.exists(DATA_DIR):
+    os.mkdir(DATA_DIR)
 
 if not os.path.exists(USER_DATA_DIR):
     os.mkdir(USER_DATA_DIR)
@@ -20,13 +24,19 @@ def open_file():
     
     if file_path:
         # Get the file size
-        subs_ai = SubsAI()
-        model = subs_ai.create_model('API/openai/whisper', {'language': language_var.get(), 'api_key': api_key_var.get()})
-        subs = subs_ai.transcribe(file_path, model)
-        result_textbox.insert(tk.END, subs.to_string(format_='srt'))     
+        try:
+            subs_ai = SubsAI()
+            model = subs_ai.create_model('API/openai/whisper', {'language': language_var.get(), 'api_key': api_key_var.get()})
+            result_textbox.insert(tk.END, 'Processing {}...\n'.format(file_path))
+            subs = subs_ai.transcribe(file_path, model)
+            result_textbox.delete(1.0, tk.END)
+            result_textbox.insert(tk.END, subs.to_string(format_='srt'))
+        except Exception as e:
+            result_textbox.insert(tk.END, 'ERROR\n')
+            result_textbox.insert(tk.END, str(e))
+
     else:
         result_textbox.delete(1.0, tk.END)  # Clear previous content
-        result_textbox.insert(tk.END, "No file selected: Please select a file to check its size.\n")
 
 # Create the main window
 root = tk.Tk()
@@ -92,8 +102,8 @@ scrollbar.config(command=result_textbox.yview)
 
 def save_to_file():
     file_path = filedialog.asksaveasfilename(
-        defaultextension=".txt",
-        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+        defaultextension=".srt",
+        filetypes=[("Subtitle file", "*.srt"), ("All Files", "*.*")]
     )
     if file_path:
         with open(file_path, "w") as file:
