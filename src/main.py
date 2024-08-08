@@ -12,6 +12,9 @@ appauthor = "lotka"
 USER_DATA_DIR = user_data_dir(appname, appauthor)
 DATA_DIR = os.path.dirname(USER_DATA_DIR)
 
+current_file = None
+current_folder = None
+
 if not os.path.exists(DATA_DIR):
     os.mkdir(DATA_DIR)
 
@@ -21,6 +24,8 @@ if not os.path.exists(USER_DATA_DIR):
 def open_file():
     # Open a file dialog and select a file
     file_path = filedialog.askopenfilename()
+    current_file = os.path.splitext(os.path.basename(file_path))[0]
+    current_folder = os.path.dirname(file_path)
     
     if file_path:
         # Get the file size
@@ -103,6 +108,8 @@ scrollbar.config(command=result_textbox.yview)
 def save_to_file():
     file_path = filedialog.asksaveasfilename(
         defaultextension=".srt",
+        initialfile=current_file,
+        initialdir=current_folder,
         filetypes=[("Subtitle file", "*.srt"), ("All Files", "*.*")]
     )
     if file_path:
