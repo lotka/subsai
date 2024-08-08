@@ -1,25 +1,25 @@
-import tkinter as tk
-from tkinter import filedialog
-from tkinter import filedialog
-import os
-
+import os,sys
+# check if run as script or exe --> https://pyinstaller.org/en/stable/runtime-information.html
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    ROOT = sys._MEIPASS
+else:
+    ROOT = os.path.dirname(__file__)
+# import sys
+# sys.path
+# sys.path.append(ROOT)
+os.environ["PATH"] = os.environ["PATH"] + os.pathsep + ROOT
 from subsai.main import SubsAI
 
+import tkinter as tk
+from tkinter import filedialog
+
 from platformdirs import user_data_dir
+
 appname = "SubsAItk"
 appauthor = "lotka"
 
 USER_DATA_DIR = user_data_dir(appname, appauthor)
 DATA_DIR = os.path.dirname(USER_DATA_DIR)
-
-current_file = None
-current_folder = None
-
-if not os.path.exists(DATA_DIR):
-    os.mkdir(DATA_DIR)
-
-if not os.path.exists(USER_DATA_DIR):
-    os.mkdir(USER_DATA_DIR)
 
 def open_file():
     # Open a file dialog and select a file
