@@ -4,3 +4,4 @@ openai
 numpy<2
 pysubs2~=1.6.0
 pydub
+platformdirs
