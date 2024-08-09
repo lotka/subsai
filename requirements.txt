@@ -12,3 +12,5 @@ openai
 transformers
 numpy<2
 platformdirs==4.2.2
+webrtcvad==2.0.10
+lightning-fabric

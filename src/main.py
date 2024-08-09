@@ -66,6 +66,8 @@ class MyApp:
         self.scrollable_frame = None
         self.open_button = None
         self.current_model = None
+        self.result_textbox = None
+        self.save_button = None
 
         # # Create a button
         # self.button = tk.Button(root, text="Click Me", command=self.on_button_click)
@@ -131,13 +133,15 @@ class MyApp:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Create a Text widget with vertical scrolling
-        result_textbox = tk.Text(frame, font=('Arial', 12), yscrollcommand=scrollbar.set, wrap=tk.WORD)
-        result_textbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        result_textbox.delete(1.0, tk.END)
-        result_textbox.insert(tk.END, subs.to_string(format_='srt'))
+        if not self.result_textbox:
+            self.result_textbox = tk.Text(frame, font=('Arial', 12), yscrollcommand=scrollbar.set, wrap=tk.WORD)
+            self.result_textbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            # Configure the Scrollbar to work with the Text widget
+            scrollbar.config(command=self.result_textbox.yview)
+        self.result_textbox.delete(1.0, tk.END)
+        self.result_textbox.insert(tk.END, subs.to_string(format_='srt'))
 
-        # Configure the Scrollbar to work with the Text widget
-        scrollbar.config(command=result_textbox.yview)
+
 
         def save_to_file():
             file_path = filedialog.asksaveasfilename(
@@ -146,12 +150,13 @@ class MyApp:
             )
             if file_path:
                 with open(file_path, "w") as file:
-                    file.write(result_textbox.get("1.0", "end-1c"))
+                    file.write(self.result_textbox.get("1.0", "end-1c"))
                 print(f"Saved string to: {file_path}")
 
         # Add the Save button at the bottom of the window
-        save_button = tk.Button(root, text="Save to File", command=save_to_file)
-        save_button.pack(side=tk.BOTTOM, pady=10)
+        if not self.save_button:
+            self.save_button = tk.Button(root, text="Save to File", command=save_to_file)
+            self.save_button.pack(side=tk.BOTTOM, pady=10)
 
     def on_dropdown_click(self, event):
         print(event)
