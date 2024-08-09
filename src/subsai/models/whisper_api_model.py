@@ -12,7 +12,7 @@ import ffmpeg
 import tempfile
 from subsai.models.abstract_model import AbstractModel
 from subsai.utils import _load_config
-from openai import OpenAI
+import openai
 from pysubs2 import SSAFile
 from pydub import AudioSegment
 
@@ -35,7 +35,7 @@ def convert_video_to_audio_ffmpeg(video_file, output_ext="mp3"):
     (
         ffmpeg
         .input(video_file)
-        .output(output_file)
+        .output(output_file, ar=16000, ac=1, map='0:a')
         .overwrite_output()
         .run(quiet=True)
     )
@@ -85,8 +85,7 @@ class WhisperAPIModel(AbstractModel):
         self.language = _load_config('language', model_config, self.config_schema)
         self.prompt = _load_config('prompt', model_config, self.config_schema)
         self.temperature = _load_config('temperature', model_config, self.config_schema)
-
-        self.client = OpenAI(api_key=self.api_key)
+        self.client = openai.OpenAI(api_key=self.api_key)
 
     def chunk_audio(self,audio_file_path) -> list:
         # Load the audio file
